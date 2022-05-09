@@ -9,18 +9,20 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
-	"log"
+	"go.uber.org/zap"
 	"strings"
 )
 
 func main() {
+	logger, _ := zap.NewDevelopment()
+
 	if err := initConfig(); err != nil {
-		log.Fatalf("initialize configs: %s", err.Error())
+		logger.Fatal("initialize configs", zap.Error(err))
 	}
 
 	db, err := initDB()
 	if err != nil {
-		log.Fatalf("initialize db: %s", err.Error())
+		logger.Fatal("initialize db", zap.Error(err))
 	}
 
 	repos := repository.NewRepository(db)
@@ -29,7 +31,7 @@ func main() {
 
 	srv := new(portfolio_manager.Server)
 	if err := srv.Run(viper.GetString("port"), handlers.InitRoutes()); err != nil {
-		log.Fatal(err)
+		logger.Fatal("run server", zap.Error(err))
 	}
 }
 
