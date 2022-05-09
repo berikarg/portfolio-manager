@@ -5,8 +5,12 @@ import (
 	"github.com/berikarg/portfolio-manager/pkg/handler"
 	"github.com/berikarg/portfolio-manager/pkg/repository"
 	"github.com/berikarg/portfolio-manager/pkg/service"
+	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
+	"github.com/pkg/errors"
 	"github.com/spf13/viper"
 	"log"
+	"strings"
 )
 
 func main() {
@@ -14,7 +18,12 @@ func main() {
 		log.Fatalf("initialize configs: %s", err.Error())
 	}
 
-	repos := repository.NewRepository()
+	db, err := initDB()
+	if err != nil {
+		log.Fatalf("initialize db: %s", err.Error())
+	}
+
+	repos := repository.NewRepository(db)
 	services := service.NewService(repos)
 	handlers := handler.NewHandler(services)
 
@@ -28,4 +37,24 @@ func initConfig() error {
 	viper.AddConfigPath("configs")
 	viper.SetConfigName("config")
 	return viper.ReadInConfig()
+}
+
+func initDB() (*sqlx.DB, error) {
+	addr := viper.GetString("database.addr")
+	hostAndPort := strings.Split(addr, ":")
+	if len(hostAndPort) != 2 {
+		return nil, errors.New("invalid db address format")
+	}
+	db, err := repository.NewPostgresDB(repository.Config{
+		Host:     hostAndPort[0],
+		Port:     hostAndPort[1],
+		Username: viper.GetString("database.user"),
+		Password: viper.GetString("database.password"),
+		DBName:   viper.GetString("database.name"),
+		SSLMode:  viper.GetString("database.ssl_mode"),
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, "create new db")
+	}
+	return db, nil
 }

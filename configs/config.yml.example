@@ -1,0 +1,6 @@
+database:
+  user: "postgres"
+  password: "put_your_db_password_here"
+  name: "postgres"            #name of used database
+  addr: "localhost:5432"      #addr - where is DB located
+  ssl_mode: "disable"
