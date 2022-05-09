@@ -1,8 +1,12 @@
 package repository
 
-import "github.com/jmoiron/sqlx"
+import (
+	"github.com/berikarg/portfolio-manager/models"
+	"github.com/jmoiron/sqlx"
+)
 
 type Authorization interface {
+	CreateUser(user models.User) (int, error)
 }
 
 type Asset interface {
@@ -20,7 +24,5 @@ type Repository struct {
 func NewRepository(db *sqlx.DB) *Repository {
 	return &Repository{
 		Authorization: NewAuthPostgres(db),
-		Asset:         NewAssetPostgres(db),
-		Saving:        NewSavingPostgres(db),
 	}
 }

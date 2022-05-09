@@ -1,8 +1,12 @@
 package service
 
-import "github.com/berikarg/portfolio-manager/pkg/repository"
+import (
+	"github.com/berikarg/portfolio-manager/models"
+	"github.com/berikarg/portfolio-manager/pkg/repository"
+)
 
 type Authorization interface {
+	CreateUser(user models.User) (int, error)
 }
 
 type Asset interface {
@@ -20,7 +24,5 @@ type Service struct {
 func NewService(repos *repository.Repository) *Service {
 	return &Service{
 		Authorization: NewAuthService(repos.Authorization),
-		Asset:         NewAssetService(repos.Asset),
-		Saving:        NewSavingService(repos.Saving, repos.Asset),
 	}
 }
