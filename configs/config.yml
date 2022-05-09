@@ -1,0 +1,5 @@
+database:
+  user: "postgres"
+  password: "OgNRN8BQ"
+  name: "postgres"            #name of used database
+  addr: "localhost:5432"      #addr - where is DB located
