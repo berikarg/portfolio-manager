@@ -27,7 +27,7 @@ func main() {
 
 	repos := repository.NewRepository(db)
 	services := service.NewService(repos)
-	handlers := handler.NewHandler(services)
+	handlers := handler.NewHandler(services, logger)
 
 	srv := new(portfolio_manager.Server)
 	if err := srv.Run(viper.GetString("port"), handlers.InitRoutes()); err != nil {

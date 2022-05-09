@@ -3,14 +3,16 @@ package handler
 import (
 	"github.com/berikarg/portfolio-manager/pkg/service"
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 type Handler struct {
 	services *service.Service
+	logger   *zap.Logger
 }
 
-func NewHandler(services *service.Service) *Handler {
-	return &Handler{services: services}
+func NewHandler(services *service.Service, logger *zap.Logger) *Handler {
+	return &Handler{services: services, logger: logger}
 }
 
 func (h *Handler) InitRoutes() *gin.Engine {
