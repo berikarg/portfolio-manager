@@ -4,3 +4,5 @@ database:
   name: "postgres"            #name of used database
   addr: "localhost:5432"      #addr - where is DB located
   ssl_mode: "disable"
+
+port: "8000"
